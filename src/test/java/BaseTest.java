@@ -33,7 +33,6 @@ public class BaseTest {
         caps.setCapability("version", "43.0");
         driver = new RemoteWebDriver(new URL(HUB_URL), caps);
 
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
 
