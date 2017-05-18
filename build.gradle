@@ -7,8 +7,8 @@ repositories {
 }
 
 dependencies {
-    compile "org.seleniumhq.selenium:selenium-java:2.25.0"
-    compile "org.testng:testng:6.3.1"
+    compile "org.seleniumhq.selenium:selenium-java:2.53.0"
+    compile "org.testng:testng:6.9.6"
 }
 
 tasks.withType(Test) {
@@ -17,9 +17,9 @@ tasks.withType(Test) {
     maxParallelForks = 2
 }
 
-task includegroup1(type: Test) {
+task allLoginTests(type: Test) {
     useTestNG() {
-        includeGroups 'group1'
+
     }
 }
 

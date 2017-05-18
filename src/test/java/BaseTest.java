@@ -16,60 +16,27 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseTest {
 
-    protected static final String WEB_SERVER = System.getProperty("WEB_SERVER", "http://stackoverflow.com/");
-    protected static final String BROWSER = System.getProperty("BROWSER", "firefox");
-    protected static final boolean REMOTE_DRIVER = Boolean.valueOf(System.getProperty("REMOTE_DRIVER", "false"));
-    protected static final String SELENIUM_HOST = System.getProperty("SELENIUM_HOST", "localhost");
-    protected static final int SELENIUM_PORT = Integer.valueOf(System.getProperty("SELENIUM_PORT", "4444"));
+    public static final String USERNAME = "dkrtolica";
+    public static final String ACCESS_KEY = "870c89b8-b5b1-49cd-a71b-43a4c7fcee40";
+    public static final String HUB_URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@ondemand.saucelabs.com:443/wd/hub";
+
+    protected static final String WEB_SERVER = "https://referencesite.nudatasecurity.com/";
+
 
     public static RemoteWebDriver driver;
 
     @BeforeClass(alwaysRun = true)
     public void setupWebDriver() throws MalformedURLException {
-        if (REMOTE_DRIVER) {
-            setupRemoteDriver();
-            driver.setFileDetector(new LocalFileDetector());
-        } else {
-            setupLocalDriver();
-        }
+
+        DesiredCapabilities caps = DesiredCapabilities.chrome();
+        caps.setCapability("platform", "Mac");
+        caps.setCapability("version", "43.0");
+        driver = new RemoteWebDriver(new URL(HUB_URL), caps);
+
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
-    private void setupLocalDriver() {
-        if (BROWSER.equals("firefox")) {
-            driver = new FirefoxDriver();
-        } else if (BROWSER.equals("chrome")) {
-            String path = "lib/chromedriver";
-            if (System.getProperty("os.name").contains("Windows")) {
-                path = "lib/chromedriver.exe";
-            }
-            System.setProperty("webdriver.chrome.driver", path);
-            driver = new ChromeDriver();
-        } else if (BROWSER.equals("internetExplorer")) {
-            DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
-            capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-            driver = new InternetExplorerDriver(capabilities);
-        } else {
-            throw new RuntimeException("Browser type unsupported");
-        }
-    }
 
-    private void setupRemoteDriver() throws MalformedURLException {
-        DesiredCapabilities capabilities;
-        if (BROWSER.equals("firefox")) {
-            capabilities = DesiredCapabilities.firefox();
-        } else if (BROWSER.equals("internetExplorer")) {
-            capabilities = DesiredCapabilities.internetExplorer();
-            capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-        } else if (BROWSER.equals("chrome")) {
-            capabilities = DesiredCapabilities.chrome();
-        } else {
-            throw new RuntimeException("Browser type unsupported");
-        }
-        driver = new RemoteWebDriver(
-                new URL("http://" + SELENIUM_HOST + ":" + SELENIUM_PORT + "/wd/hub"),
-                capabilities);
-    }
 
     @BeforeMethod(alwaysRun = true)
     public void loadWebApplication() {

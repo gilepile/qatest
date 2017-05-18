@@ -1,4 +1,6 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,28 +13,59 @@ public abstract class AbstractPageObject {
 
     protected WebDriver driver;
     protected WebDriverWait wait;
+    public static final int NUMBER_OF_STALE_ELEMENT_RETRY_ATTEMPTS = 3;
 
     public AbstractPageObject(WebDriver driver) {
         this.driver = driver;
-        this.wait = (new WebDriverWait(driver, 30));
-        isLoaded();
+        this.wait = (new WebDriverWait(driver, 60));
+        waitForPageToLoad();
     }
 
     // Each page object must implement this method to return the identifier of a unique WebElement on that page.
     // The presence of this unique element will be used to assert that the expected page has finished loading
     protected abstract By getUniqueElement();
 
-    protected void isLoaded() throws Error {
-        //Define a list of WebElements that match the unique element locator for the page
-        List<WebElement> uniqueElement = driver.findElements(getUniqueElement());
 
-        // Assert that the unique element is present in the DOM
-        Assert.assertTrue((uniqueElement.size() > 0),
-                "Unique Element \'" + getUniqueElement().toString() + "\' not found for " + this.getClass().getSimpleName());
+    protected void waitForPageToLoad() {
+        // Wait until the unique element of current page is visible in the browser
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(getUniqueElement()));
+        } catch (TimeoutException e) {
+            TimeoutException timeoutException = new TimeoutException(
+                    "Timed out loading " + this.getClass().getSimpleName() + "\n" + e.getMessage()
+            );
+            timeoutException.setStackTrace(e.getStackTrace());
+            throw timeoutException;
+        }
+    }
 
-        // Wait until the unique element is visible in the browser and ready to use. This helps make sure the page is
-        // loaded before the next step of the tests continue.
-        wait.until(ExpectedConditions.visibilityOfElementLocated(getUniqueElement()));
+    public String getTitle() {
+        return  driver.getTitle();
+    }
+
+    /**
+     *  Method will wait until element is clickable and then it will try to click  several times
+     *  before throwing StaleElementReferenceException
+     *
+     * @param locator  used to find element;
+     */
+    public void clickWithWaitAndRetry(By locator) {
+        wait.until(ExpectedConditions.elementToBeClickable(locator));
+        int attempts = 0;
+        while (attempts < NUMBER_OF_STALE_ELEMENT_RETRY_ATTEMPTS) {
+            try {
+                driver.findElement(locator).click();
+                break;
+            } catch (StaleElementReferenceException e) {
+
+            }
+            attempts++;
+        }
+    }
+
+    public boolean elementExists(By locator)
+    {
+        return !driver.findElements(locator).isEmpty();
     }
 
 }
