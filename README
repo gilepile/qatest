@@ -1,15 +1,4 @@
-This project is an example of building a test automation framework using WebDriver w Java, TestNG, Gradle with InteliJ or Eclipse.
 
-It extends the basic tutorial found on the Selenium Wiki and runs a couple of tests against Stack Overflow.
-
-http://code.google.com/p/selenium/wiki/GettingStarted
-http://code.google.com/p/selenium/wiki/PageObjects
-
-There are a couple of key concepts demonstrated in this project that will help you get started
-
-- Switching the navigation of the tests from one page object to another
-- Abstracting the test setup into a BaseTest class
-- Using TestNG and Gradle to run the tests
 
 Creating the IDE project
 ------------------------
@@ -24,39 +13,15 @@ Eclipse
 cd ~/<checkout dir>/page-objects
 ./gradlew eclipse
 
-If you don't want to use Gradle you can also do this manually, as explained here by Simon Stewart aka The WebDriver guy.
-http://www.youtube.com/watch?v=Eft3qGFoqwE
+
 
 If you want to update the version of Selenium or TestNG you are using just update the version numbers in build.gradle and rerun the above commands to regenerate your project.
 
-Writing the Tests
------------------
 
-I find using a Test Driven (Test) Development approach works well here.
-- Write the test
-- Create the Page Object Methods
-- Create the Page Object Locators
-- Run the test and debug until it passes
-
-Note also that the tests don't know anything about WebDriver .... keep it that way!
-
-Building the Page Objects
--------------------------
-
-You can use the PageFactory helper to define your locators
-
-http://code.google.com/p/selenium/wiki/PageFactory
-
-However, I prefer to store them as By objects
-
-There are several reasons for this:
-
-- The WebElement will get looked up each time you use the locator which can help avoid stale element exceptions
-- You can reuse your locators in methods that assert the presence or absence of a WebElement (return driver.findElements(yourByObjectLocator).size() > 0)
-- Personally I think they look cleaner in the code
 
 Running the tests via the IDE
 -----------------------------
+You will need TestNG plugin installed for your IDE
 
 Right click on the test and select 'run' or 'debug'
 
@@ -66,25 +31,18 @@ Running the tests using Gradle
 Unless you have Gradle installed, you'll need to use the Gradle wrapper which is included in the project
 ./gradlew or gradle.bat on Windows
 
-To run all tests (uses Firefox by default)
-./gradlew clean test
-
-To run a single test class
-./gradle clean test -Dtest.single="LoginTest"
-
-To run only tests belonging to group 1 (as defined in the includegroup1 task in build.gradle)
-./gradlew clean includegroup1
-
-To run only tests not belonging to group 1 (as defined in the excludegroup1 task in build.gradle)
-./gradlew clean excludegroup1
-
-To run tests in Chrome
-./gradle clean test -DBROWSER=chrome
-
-To run tests in IE
-gradle.bat clean test -DBROWSER=internetExplorer
+To run all tests:
+Mac/Unix run:
+./gradlew clean build allLoginTests
 
 
 
-All and any feedback welcome and appreciated, I'm still learning too.
-@iainrose
+Windows:
+gradlew.bat clean build allLoginTests
+
+Note: I’ve not tested this myself because I do not have access to the Windows machine at the moment, but it should work
+
+
+
+Reports, which they can (and should) be improved are in:
+  <your path to the project>/page-objects/build/reports/tests/index.html
