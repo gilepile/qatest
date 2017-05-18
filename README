@@ -34,13 +34,9 @@ Java and Gradle installed
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 https://gradle.org/install
 
-Unless you have Gradle installed, you'll need to use the Gradle wrapper which is included in the project
-./gradlew or gradle.bat on Windows
-
 To run all tests:
 Mac/Unix run:
 ./gradlew clean build allLoginTests
-
 
 
 Windows:
@@ -49,6 +45,6 @@ gradlew.bat clean build allLoginTests
 Note: I’ve not tested this myself because I do not have access to the Windows machine at the moment, but it should work
 
 
-
 Reports, which they can (and should) be improved are in:
   <your path to the project>/page-objects/build/reports/tests/index.html
+
