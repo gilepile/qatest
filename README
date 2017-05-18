@@ -28,6 +28,12 @@ Right click on the test and select 'run' or 'debug'
 Running the tests using Gradle
 ------------------------------
 
+Required:
+Java and Gradle installed
+
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+https://gradle.org/install
+
 Unless you have Gradle installed, you'll need to use the Gradle wrapper which is included in the project
 ./gradlew or gradle.bat on Windows
 
